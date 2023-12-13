@@ -1,0 +1,177 @@
+﻿@*@model ProcessDataCompletedViewModel
+
+<div class="loader">
+</div>
+
+<br />
+<h3>
+    View Attendence <small class="text-body-secondary"> Reports Here</small>
+</h3>
+<hr />
+<h6><u>Selected Year And Month</h6>
+<p>Month:<b> @Model.Month </b></p>
+<p>Year:<b> @Model.Year </b></p>
+<div id="collapseOne" class="collapse show">
+        
+    <br />
+    <center>
+        <a asp-action="LateInMinutes" asp-route-month="@Model.Month" asp-route-year="@Model.Year">
+            <input type="button" class="btn btn-primary" value="Late in Report" />
+        </a>
+        <a asp-action="WorkHourReport" asp-route-month="@Model.Month" asp-route-year="@Model.Year">
+            <input type="button" class="btn btn-primary" value="Work Hour Report" />
+        </a>
+        <a asp-action="EarlyOutMinute" asp-route-month="@Model.Month" asp-route-year="@Model.Year">
+            <input type="button" class="btn btn-primary" value="Early Out Report" />
+        </a>
+        <a asp-action="OverTimeMinute" asp-route-month="@Model.Month" asp-route-year="@Model.Year">
+            <input type="button" class="btn btn-primary" value="Over time Report" />
+        </a>
+    </center>
+</div>
+*@
+@model ProcessDataCompletedViewModel
+
+@{
+    ViewData["Title"] = "Process Data Completed";
+}<br />
+
+<div class="loader">
+</div>
+
+<div class="gradient-magic">
+<h3>
+    View Log Reports
+    <i class="bi bi-file-earmark-text-fill"></i>
+</h3>
+<hr />
+<center>
+    <div id="collapseOne" class="collapse show" style="width:40%; border:solid 2px RGBA(120,194,173); padding: 15px; border-radius:20px; text-align:left;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <div class="accordion-body">
+
+            <h5 style="text-align:center">Select Year And Month</h5>
+        <label for="year">Year:</label>
+        <select id="year" class="form-select" style="text-align:center">
+        </select>
+
+
+        <label for="month">Month:</label>
+        <select id="month" class="form-select" style="text-align:center">
+        </select>
+        <br />
+
+        <label for="reportType">Report Type:</label>
+        <select id="reportType" class="form-select">
+            <option value="latein">Late In Report</option>
+            <option value="earlyout">Early Out Report</option>
+            <option value="workhour">Work Hour Report</option>
+            <option value="overtime">Overtime Report</option>
+        </select>
+        <br />
+        <center>
+            <input type="button" id="processBtn" class="btn btn-primary" value="Process" />
+        </center>
+    </div>
+</div>
+</div>
+</center>
+<script>
+    const yearDropdown = document.getElementById("year");
+    const monthDropdown = document.getElementById("month");
+    const processBtn = document.getElementById("processBtn");
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+
+    for (let year = 2021; year <= currentYear; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearDropdown.appendChild(option);
+    }
+
+    function generateMonthOptions() {
+        const selectedYear = yearDropdown.value;
+        const isCurrentYear = selectedYear == currentYear;
+
+        monthDropdown.innerHTML = '';
+
+        const endMonth = isCurrentYear ? currentMonth : 12;
+
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        for (let month = 1; month <= endMonth; month++) {
+            const option = document.createElement("option");
+            option.value = month;
+            option.textContent = monthNames[month - 1];
+            monthDropdown.appendChild(option);
+        }
+
+        monthDropdown.value = currentMonth;
+    }
+
+    yearDropdown.value = currentYear;
+    monthDropdown.value = currentMonth;
+
+    yearDropdown.addEventListener('change', generateMonthOptions);
+
+    generateMonthOptions();
+
+    processBtn.addEventListener('click', function () {
+        const selectedYear = yearDropdown.value;
+        const selectedMonth = monthDropdown.value;
+        const monthName = monthDropdown.options[selectedMonth - 1].textContent;
+
+        const selectedReport = document.getElementById("reportType").value;
+
+        checkDataAvailability(selectedYear, selectedMonth)
+            .then(dataExists => {
+                if (dataExists) {
+                    let url = "";
+                    switch (selectedReport) {
+                        case "latein":
+                            url = `/DataUpload/LateInMinutes?month=${selectedMonth}&year=${selectedYear}`;
+                            break;
+                        case "earlyout":
+                            url = `/DataUpload/EarlyOutMinute?month=${selectedMonth}&year=${selectedYear}`;
+                            break;
+                        case "workhour":
+                            url = `/DataUpload/WorkHourReport?month=${selectedMonth}&year=${selectedYear}`;
+                            break;
+                        case "overtime":
+                            url = `/DataUpload/OverTimeMinute?month=${selectedMonth}&year=${selectedYear}`;
+                            break;
+                        default:
+                            alert("Invalid report type selected.");
+                            return;
+                    }
+
+                    window.location.href = url;
+                } else {
+                    alert(`No data available for ${monthName} ${selectedYear}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking data availability:', error);
+                alert('An error occurred while checking data availability. Please try again.');
+            });
+    });
+
+    // Function to check data availability
+    function checkDataAvailability(year, month) {
+        const url = `/DataUpload/CheckDataAvailability?year=${year}&month=${month}`;
+
+        return fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to check data availability');
+                }
+                return response.json();
+            });
+    }
+
+</script>

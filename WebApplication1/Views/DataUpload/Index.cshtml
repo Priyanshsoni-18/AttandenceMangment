@@ -1,0 +1,36 @@
+﻿@model IEnumerable<MVC_Read_Excel.Models.AttAttendanceLog>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<head>
+    <script type="text/javascript">
+        function my_code() {
+            const loader = document.createElement("div");
+            loader.classList.add("loader");
+            document.body.appendChild(loader);
+
+            // Option: Disable the Upload button for multiple submissions
+            document.querySelector(".btn-primary").disabled = true;
+        }
+    </script>
+</head>
+<body >
+
+    <div class="gradient-magic">
+    <div class="loader" ></div>
+    <br />
+    <h4>Upload Data <i class="bi bi-database-add"></i>  </h4>
+    <hr />
+    <center>
+    <form id="myForm" asp-controller="DataUpload" asp-action="Index" method="post" enctype="multipart/form-data" onsubmit="my_code()" >
+        <input type="file" class="form-control" name="file" id="fileInput" accept=".xlsx,.xls" style="width: 40%"; required />
+  
+        <br />
+            <input type="submit" class="btn btn-primary" value="Upload" />
+      
+    </form>
+    </center>
+    <a href="~/DataUpload/View_data" class="alert-link">Click Here to View Data</a>.
+    
+    </div>
+</body>

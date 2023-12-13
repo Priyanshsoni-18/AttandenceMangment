@@ -1,0 +1,44 @@
+﻿@model IEnumerable<MVC_Read_Excel.Models.AttAttendanceLog>
+@{
+    ViewData["Title"] = "View_Data";
+}
+<div class="loader">
+</div>
+
+<div class="container">
+    <hr />
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class ="table-primary">
+                <th>
+                    UserID
+                </th>
+                <th>
+                    UserName
+                </th>
+                <th>
+                    LogTime
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var details in Model)
+            {
+                <tr>
+                    <td>
+                        @details.UserId
+                    </td>
+                    <td>
+                        @details.Username
+                    </td>
+                    <td>
+                        @details.LogTime
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

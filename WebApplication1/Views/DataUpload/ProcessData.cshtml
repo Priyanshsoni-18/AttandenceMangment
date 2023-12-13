@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Process Data";
+}
+<div class="loader">
+</div>
+<h2>Process Data</h2>
+
+<h3>
+    View Reports
+    <small class="text-body-secondary"> Here</small>
+</h3>
+<br />
+<center>
+    <a id="lateInReportLink" asp-action="LateInMinutes" asp-route-month="0" asp-route-year="0">
+        <input type="button" class="btn btn-primary" value="Late in Report" />
+    </a>
+    <a id="workHourReportLink" asp-action="WorkHourReport" asp-route-month="0" asp-route-year="0">
+        <input type="button" class="btn btn-primary" value="Work Hour Report" />
+    </a>
+    <a id="earlyOutReportLink" asp-action="EarlyOutMinute" asp-route-month="0" asp-route-year="0">
+        <input type="button" class="btn btn-primary" value="Early Out Report" />
+    </a>
+    <a id="overTimeReportLink" asp-action="OverTimeMinute" asp-route-month="0" asp-route-year="0">
+        <input type="button" class="btn btn-primary" value="Over time Report" />
+    </a>
+</center>
+     

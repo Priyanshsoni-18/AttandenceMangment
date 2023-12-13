@@ -1,0 +1,37 @@
+Create Database pr;
+
+use pr;
+
+CREATE TABLE att_AttendanceLog (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId VARCHAR(40),
+    username VARCHAR(100),
+    attDate DATE,
+    LogTime DATETIME,
+    Createdby VARCHAR(40),
+    createddate DATETIME
+);
+
+truncate table Att_AttendanceRegister;
+truncate table att_AttendanceLog;
+
+DELETE FROM att_AttendanceLog;
+ALTER TABLE Att_AttendanceRegister ALTER COLUMN WorkHour NUMERIC(18,2);
+
+
+CREATE TABLE Att_AttendanceRegister (
+
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId VARCHAR(50) NOT NULL,
+    UserName VARCHAR(50) NOT NULL,
+    AttDate DATETIME NOT NULL,
+    LateInMinute NUMERIC(18, 0) NOT NULL,
+    EarlyOutMinute NUMERIC(18, 0) NOT NULL,
+    WorkHour NUMERIC(18, 2) NOT NULL,
+    OverTimeMinute NUMERIC(18, 0),
+    IsLeave BIT,
+    IsHoliday BIT,
+    IsWeekOff BIT,
+    ProcessDate DATETIME,
+    ProcessBy VARCHAR(40)
+);

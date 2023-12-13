@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="loader"></div>
+<br />
+
+<div class="gradient-magic">
+<div class="text-center">
+    <h4 class="display-4"><u>Welcome To Project Attendance</u></h4>
+    
+    <img src="~/img/attendancematters2.png" alt="Attendance Matters" />
+
+
+    <br /><hr />
+    <p>This is Welcome page for the Project Attendance <i class="bi bi-card-checklist"></i> application. It provides functionality for uploading and processing attendance data.</p>
+    <p>To get started, click the button below to upload your data reports:</p>
+
+    <a class="nav-link" asp-area="" asp-controller="DataUpload" asp-action="index">
+        <input type="button" class="btn btn-primary" value="Upload Data Reports " />
+    </a>
+</div>
+</div>

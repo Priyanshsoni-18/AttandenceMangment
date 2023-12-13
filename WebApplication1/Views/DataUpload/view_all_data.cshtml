@@ -1,0 +1,140 @@
+﻿@model IEnumerable<MVC_Read_Excel.Models.AttAttendanceLog>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="loader">
+</div>
+
+<div class="gradient-magic">
+<br />
+<h3>
+    Log Process <i class="bi bi-box-arrow-in-down"></i>
+</h3>
+<hr />
+<center>
+<div id="collapseOne" class="collapse show" >
+        <div class="accordion-body" style="width:40%; border:solid 2px RGBA(120,194,173); padding: 15px; border-radius:20px; text-align:left;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+             <form id="myForm" asp-controller="DataUpload" enctype="multipart/form-data"  >
+   
+            <h5 style="text-align:center">Select Year And Month</h5>
+            <label for="year"><b>Year:</b></label>
+        <select id="year" class="form-select" style="text-align:center">
+        </select>
+
+            <label for="month" style="margin-top:10px;"><b>Month:</b></label>
+            <select id="month" class="form-select" style="text-align:center">
+        </select>
+        <br />
+        <center>
+                    <input type="button" id="processBtn" class="btn btn-primary" value="Log Process" onclick="my_code()" />
+        </center>
+        </form>
+    </div>
+
+</div>
+</center>
+<script>
+
+    const yearDropdown = document.getElementById("year");
+    const monthDropdown = document.getElementById("month");
+    const processBtn = document.getElementById("processBtn");
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; 
+
+    for (let year = 2021; year <= currentYear; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearDropdown.appendChild(option);
+    }
+
+    function generateMonthOptions() {
+        const selectedYear = yearDropdown.value;
+        const isCurrentYear = selectedYear == currentYear;
+
+        monthDropdown.innerHTML = '';
+
+        const endMonth = isCurrentYear ? currentMonth : 11; 
+
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        for (let month = 0; month <= endMonth; month++) {
+            const option = document.createElement("option");
+            option.value = month + 1; 
+            option.textContent = monthNames[month];
+            monthDropdown.appendChild(option);
+        }
+
+
+        monthDropdown.value = currentMonth;
+    }
+
+    yearDropdown.value = currentYear;
+    monthDropdown.value = currentMonth;
+
+    yearDropdown.addEventListener('change', generateMonthOptions);
+
+    generateMonthOptions();
+
+    processBtn.addEventListener('click', function () {
+        const selectedYear = yearDropdown.value;
+        const selectedMonth = monthDropdown.value;
+        const monthName = monthDropdown.options[selectedMonth -1].textContent;
+
+        checkDataAvailability(selectedYear, selectedMonth)
+            .then(dataExists => {
+                if (dataExists) {
+                    const url = `/DataUpload/ProcessData?month=${selectedMonth}&year=${selectedYear}`;
+                    window.location.href = url;
+                } else {
+                    alert(`No data available for ${monthName} ${selectedYear}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking data availability:', error);
+                alert('An error occurred while checking data availability. Please try again.');
+            });
+    });
+
+
+    // Function to check data availability
+    function checkDataAvailability(year, month) {
+        const url = `/DataUpload/CheckDataAvailability?year=${year}&month=${month}`;
+
+        return fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to check data availability');
+                }
+                return response.json();
+            });
+    }
+    //function my_code() {
+    //    const loader = document.createElement("div");
+    //    loader.classList.add("loader");
+    //    document.body.appendChild(loader);
+
+    //    // Optional: Disable the Upload button to prevent multiple submissions
+    //    document.querySelector(".btn-primary").disabled = true;
+    //}
+    function my_code() {
+        // Display the loader
+        const loader = document.createElement("div");
+        loader.classList.add("loader");
+        document.body.appendChild(loader);
+
+        // Optional: Disable the Upload button to prevent multiple submissions
+        document.querySelector(".btn-primary").disabled = true;
+
+        // Submit the form to start the log process
+        document.getElementById("myForm").submit();
+    }
+    
+</script>
+</div>

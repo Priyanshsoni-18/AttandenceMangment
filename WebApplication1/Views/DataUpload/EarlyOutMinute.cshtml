@@ -1,0 +1,161 @@
+﻿@*@model List<EarlyOutMinuteModel>
+<div class="loader">
+</div>
+<div class="container p-4">
+    <div class="row p-3">
+        <div class="col-6">
+            <h1>Early Out Report</h1>
+        </div>
+        <div class="col-6 text-end">
+            <a class="btn btn-primary" asp-action="ProcessDataCompleted" asp-controller="DataUpload">
+                <i class="bi bi-arrow-left"></i>&nbsp;Back To View Reports
+            </a>
+
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print
+            </button>
+
+
+        </div>
+    </div>
+</div>
+
+@foreach (var reportModel in Model)
+{
+    <div class="container">
+        <h5>User Id: @reportModel.UserId  User Name: @reportModel.UserName</h5>
+        <table class="table table-bordered table-striped">
+            <tr class="table-primary">
+                <th>Date</th>
+                <th>In Time</th>
+                <th>Out Time</th>
+                <th>Early Out Minute</th>
+            </tr>
+            @foreach (var entry in reportModel.ReportEntries)
+            {
+                <tr>
+                    <td>@entry.AttDate.ToString("dd-MM-yyyy")</td>
+                    <td>@entry.LoginTime.ToString("hh\\:mm")</td>
+                    <td>@entry.LogoutTime.ToString("hh\\:mm")</td>
+                    <td>
+                        <text>@entry.EarlyOutMinute.TotalMinutes.ToString("0") min</text>
+
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <th colspan="3">Group Total</th>
+                <th>
+                    @{
+                        int groupTotalMinutes = (int)reportModel.GroupTotal.TotalMinutes;
+                        <text>@groupTotalMinutes.ToString("0") min</text>
+
+                    }
+                </th>
+            </tr>
+
+        </table>
+    </div>
+    <br />
+}
+
+*@
+
+@model List<EarlyOutMinuteModel>
+<div class="loader">
+</div>
+<div class="container p-4">
+    <div class="row p-3">
+        <div class="col-6">
+            <h1>Early Out Report</h1>
+        </div>
+        <div class="col-6 text-end">
+            <a class="btn btn-primary" asp-action="ProcessDataCompleted" asp-controller="DataUpload">
+                <i class="bi bi-arrow-left"></i>&nbsp;Back To View Reports
+            </a>
+
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print
+            </button>
+        </div>
+    </div>
+
+
+<div class="container p-1">
+    <div class="row p-2">
+        <div class="col-6">
+            <select id="userIdFilter" class="form-control">
+                <option value="" selected disabled>Select User ID</option>
+                <option value="">All Users</option>
+                @foreach (var reportModel in Model.OrderBy(u => u.UserId).Select(u => u.UserId).Distinct())
+                {
+                    <option value="@reportModel">@reportModel</option>
+                }
+            </select>
+        </div>
+        <div class="col-6 text-end">
+            <button class="btn btn-primary" id="filterButton">
+                <i class="bi bi-funnel"></i> Apply Filter
+            </button>
+        </div>
+    </div>
+</div>
+
+@foreach (var reportModel in Model)
+{
+    <div class="container user-report" data-userid="@reportModel.UserId">
+        <h5>User Id: @reportModel.UserId | User Name: @reportModel.UserName</h5>
+        <table class="table table-bordered table-striped">
+            <tr class="table-primary">
+                <th>Date</th>
+                <th>In Time</th>
+                <th>Out Time</th>
+                <th>Early Out Minute</th>
+            </tr>
+            @foreach (var entry in reportModel.ReportEntries)
+            {
+                <tr>
+                    <td>@entry.AttDate.ToString("dd-MM-yyyy")</td>
+                    <td>@entry.LoginTime.ToString("hh\\:mm")</td>
+                    <td>@entry.LogoutTime.ToString("hh\\:mm")</td>
+                    <td>
+                        <text>@entry.EarlyOutMinute.TotalMinutes.ToString("0") min</text>
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <th colspan="3">Group Total</th>
+                <th>
+                    @{
+                        int groupTotalMinutes = (int)reportModel.GroupTotal.TotalMinutes;
+                        <text>@groupTotalMinutes.ToString("0") min</text>
+                    }
+                </th>
+            </tr>
+        </table>
+    </div>
+    <br />
+}
+
+<script>
+    $("#filterButton").on("click", function () {
+        var selectedUserId = $("#userIdFilter").val();
+        filterReportByUserId(selectedUserId);
+    });
+
+    function filterReportByUserId(userId) {
+        $(".user-report").each(function () {
+            var userReport = $(this);
+            var reportUserId = userReport.data("userid").toString();
+
+            if (!userId || userId === reportUserId) {
+                userReport.show();
+            } else {
+                userReport.hide();
+            }
+        });
+    }
+</script>
+</div>

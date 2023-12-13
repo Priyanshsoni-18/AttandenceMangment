@@ -1,0 +1,36 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+<div class="container p-4">
+    <div class="row p-6">
+        <div class="col-6">
+            <h1 class="text-danger">Error.</h1>
+            <h4 class="text-danger">An error occurred while processing your request.</h4>
+
+        </div>
+        <div class="col-6 text-end">
+            <a class="btn btn-primary" asp-action="Index" asp-controller="DataUpload">
+                <i class="bi bi-arrow-left"></i>&nbsp;Back To Data Upload
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<div class="container">
+    <strong>
+        Error in @Model.ControllerName Controller
+        in the @Model.ActionName Action Method. The error is
+        @Model.ErrorMessage
+    </strong>
+
+</div> 
+ 
+
